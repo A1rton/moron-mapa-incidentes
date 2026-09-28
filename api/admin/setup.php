@@ -18,6 +18,12 @@ enforce_rate_limit(
 );
 
 try {
+    if (!ADMIN_SETUP_ENABLED) {
+    json_response([
+        'error' =>
+            'La activación del administrador no está habilitada en este servidor.'
+    ], 403);
+    }
     $data = read_json_body();
     $password = $data['password'] ?? '';
     $setupToken = $data['setupToken'] ?? '';
