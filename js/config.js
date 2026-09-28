@@ -20,7 +20,7 @@ export const CONFIG = Object.freeze({
   // en WGS84 (EPSG:4326), por ejemplo './data/localidades.geojson'.
   boundariesUrl: '',
   // INTEGRAR INCIDENTES: URL de tu API o GeoJSON. Vacío = ningún dato inventado.
-  incidentsUrl: '/api/incidents.php',
+  incidentsUrl: new URL('../api/incidents.php', import.meta.url).href,
   // Leaflet consulta huellas OSM solo al acercar (zoom >= 16), con caché,
   // debounce, cancelación y un área máxima. En producción, usá tu proveedor.
   footprints: { enabled: true, minZoom: 16, endpoint: 'https://overpass-api.de/api/interpreter' },

@@ -60,12 +60,19 @@ export function incidentPopup(feature) {
   const coordinates = document.createElement('p'); coordinates.className = 'popup-coordinates mono';
   coordinates.textContent = `${lat.toFixed(5)}, ${lng.toFixed(5)}`; box.append(coordinates);
   const photo = feature.properties?.photoUrl;
-  if (
-  typeof photo === 'string' &&
-  /^\/api\/photos\.php\?id=[a-f0-9-]{36}$/i.test(photo)
-) {
+  let photoUrl = null;
+  if (typeof photo === 'string') {
+    try {
+      const candidate = new URL(photo, location.href);
+      const id = candidate.searchParams.get('id') || '';
+      if (candidate.origin === location.origin && /\/api\/photos\.php$/i.test(candidate.pathname) && /^[a-f0-9-]{36}$/i.test(id)) {
+        photoUrl = candidate.href;
+      }
+    } catch { /* URL inválida: se muestra el estado sin foto. */ }
+  }
+  if (photoUrl) {
     const image = document.createElement('img'); image.className = 'incident-photo'; image.loading = 'lazy';
-    image.src = photo; image.alt = `Foto del lugar: ${feature.properties.address || feature.properties.title || 'incidente'}`;
+    image.src = photoUrl; image.alt = `Foto del lugar: ${feature.properties.address || feature.properties.title || 'incidente'}`;
     image.addEventListener('error', () => { image.hidden = true; const note = document.createElement('p'); note.textContent = 'No se pudo cargar la foto.'; box.append(note); }, { once: true });
     box.append(image);
   } else {

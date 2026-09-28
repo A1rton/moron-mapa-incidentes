@@ -4,6 +4,7 @@ import { isInsideMoron } from './territory.js';
 import { INCIDENT_CATEGORIES } from './incident-categories.js';
 import { mountAddressSearch } from './address-search.js';
 const $=selector=>document.querySelector(selector);
+const adminApi = file => new URL(`../api/admin/${file}`, import.meta.url).href;
 let csrf=null, setupRequired=false, setupToken=new URLSearchParams(location.hash.slice(1)).get('setup'), engine, selected=null, current=null, draftId=crypto.randomUUID(), preparedPhoto=null, photoPreparing=null, photoRevision=0, previewURL=null;
 const announce=message=>{ $('#admin-status').textContent=message; };
 async function request(path,options={}) {
@@ -37,11 +38,11 @@ $('#auth-form').addEventListener('submit',async event=>{
   try{
     const password=$('#admin-password').value;
     if(setupRequired&&password!==$('#confirm-password').value)throw new Error('Las contraseñas no coinciden.');
-    const data=await request(setupRequired?'/api/admin/setup.php':'/api/admin/login.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password,setupToken})});
+    const data=await request(setupRequired?adminApi('setup.php'):adminApi('login.php'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password,setupToken})});
     csrf=data.csrf;setupToken=null;history.replaceState(null,'',location.pathname);$('#auth-form').reset();$('#auth-status').textContent='';await openAdmin();
   }catch(error){$('#auth-status').textContent=error.message;}finally{$('#auth-submit').disabled=false;}
 });
-$('#logout').addEventListener('click',async()=>{try{await request('/api/admin/logout.php',{method:'POST'});csrf=null;showAuth();}catch(error){handleError(error);}});
+$('#logout').addEventListener('click',async()=>{try{await request(adminApi('logout.php'),{method:'POST'});csrf=null;showAuth();}catch(error){handleError(error);}});
 function setPoint(center, recenter=true) {
   if(!isInsideMoron(center)){announce('Elegí un punto dentro del partido de Morón.');return;}
   selected=center;engine?.setSearchLocation(center,'Ubicación del incidente');
@@ -67,7 +68,7 @@ async function openAdmin() {
 async function loadRecords() {
   $('#refresh-records').disabled=true;
   try{
-    const data=await request('/api/admin/incidents.php'); const root=$('#incident-records');root.replaceChildren();$('#record-count').textContent=data.features.length;
+    const data=await request(adminApi('incidents.php')); const root=$('#incident-records');root.replaceChildren();$('#record-count').textContent=data.features.length;
     if(!data.features.length){const empty=document.createElement('p');empty.className='records-empty';empty.textContent='Todavía no hay incidentes. Cargá el primero con una dirección y una foto.';root.append(empty);}
     for(const feature of data.features){
       const button=document.createElement('button');button.type='button';button.className='record-card';
@@ -119,8 +120,8 @@ $('#incident-form').addEventListener('submit',async event=>{
     const body=new FormData();body.set('data',JSON.stringify({id:current?.id||draftId,version:current?.properties.version,title:$('#incident-title').value,categoryId:$('#incident-category').value,address:$('#incident-address').value,description:$('#incident-description').value,status:$('#incident-status').value,longitude:selected[0],latitude:selected[1]}));
     if(preparedPhoto)body.set('photo',preparedPhoto);
     const incidentUrl=current
-      ? `/api/admin/incidents.php?id=${encodeURIComponent(current.id)}`
-      : '/api/admin/incidents.php';
+      ? `${adminApi('incidents.php')}?id=${encodeURIComponent(current.id)}`
+      : adminApi('incidents.php');
     const incidentHeaders=current?{'X-HTTP-Method-Override':'PATCH'}:{};
     const data=await request(incidentUrl,{method:'POST',headers:incidentHeaders,body});
     await loadRecords();edit(data.feature);announce(data.feature.properties.status==='active'?'Incidente guardado. Ya está disponible en el mapa.':'Incidente guardado como resuelto. No aparece entre los avisos activos.');
@@ -130,8 +131,8 @@ $('#archive-incident').addEventListener('click',async()=>{
   if(!current||!confirm('¿Retirar este incidente del mapa y de la lista de administración?'))return;
   $('#incident-fields').disabled=true;
   try{
-    await request(`/api/admin/incidents.php?id=${encodeURIComponent(current.id)}`,{method:'POST',headers:{'X-HTTP-Method-Override':'DELETE'}});
+    await request(`${adminApi('incidents.php')}?id=${encodeURIComponent(current.id)}`,{method:'POST',headers:{'X-HTTP-Method-Override':'DELETE'}});
     newIncident();await loadRecords();announce('Incidente retirado.');
   }catch(error){handleError(error);}finally{$('#incident-fields').disabled=false;}
 });
-try{const data=await request('/api/admin/session.php');if(data.authenticated){csrf=data.csrf;await openAdmin();}else showAuth(data);}catch(error){$('#auth-description').textContent='No se pudo conectar con la administración. Recargá la página para volver a intentar.';$('#auth-status').textContent=error.message;}
+try{const data=await request(adminApi('session.php'));if(data.authenticated){csrf=data.csrf;await openAdmin();}else showAuth(data);}catch(error){$('#auth-description').textContent='No se pudo conectar con la administración. Recargá la página para volver a intentar.';$('#auth-status').textContent=error.message;}

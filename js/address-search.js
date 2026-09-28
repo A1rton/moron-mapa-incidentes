@@ -11,7 +11,9 @@ export function mountAddressSearch({ form, input, results, status, onSelect }) {
     button.disabled = true; status.textContent = 'Buscando dentro de Morón…'; results.hidden = true;
     const timer = setTimeout(() => activeController.abort(), 16000);
     try {
-      const response = await fetch(`/api/search.php?q=${encodeURIComponent(query)}`, { signal: activeController.signal });
+      const endpoint = new URL('../api/search.php', import.meta.url);
+      endpoint.searchParams.set('q', query);
+      const response = await fetch(endpoint, { signal: activeController.signal });
       const raw = await response.text();
       let data;
       try { data = raw ? JSON.parse(raw) : {}; }

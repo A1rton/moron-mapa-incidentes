@@ -10,7 +10,7 @@ function loadAsset(url, type) {
     element.onload = () => { clearTimeout(timer); resolve(); };
     element.onerror = () => { clearTimeout(timer); element.remove(); reject(new Error(`No se pudo cargar ${url}`)); };
     // Las reglas propias deben quedar después del CSS del proveedor.
-    if (type === 'style') document.head.insertBefore(element, document.querySelector('link[href="./styles.css"], link[href="/styles.css"]'));
+    if (type === 'style') document.head.insertBefore(element, document.querySelector('link[href$="styles.css"]'));
     else document.head.append(element);
   });
 }
