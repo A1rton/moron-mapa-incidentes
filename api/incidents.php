@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../backend/database.php';
+require_once __DIR__ . '/../backend/paths.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -74,7 +75,7 @@ try {
                 'address' => $row['address'],
                 'description' => $row['description'],
                 'status' => $row['status'],
-                'photoUrl' => '/api/photos.php?id=' . urlencode($row['photo_id']),
+                'photoUrl' => app_url('/api/photos.php?id=' . urlencode($row['photo_id'])),
                 'createdAt' => (int) $row['created_at'],
                 'updatedAt' => (int) $row['updated_at'],
                 'version' => (int) $row['version']

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/database.php';
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/paths.php';
 
 function now_ms(): int
 {
@@ -212,7 +213,7 @@ function create_admin_session(): array
 
     setcookie('moron_admin', $rawToken, [
         'expires' => time() + (8 * 60 * 60),
-        'path' => '/',
+        'path' => app_cookie_path(),
         'secure' => $secure,
         'httponly' => true,
         'samesite' => 'Strict'
@@ -283,7 +284,7 @@ function delete_admin_session(): void
 
     setcookie('moron_admin', '', [
         'expires' => time() - 3600,
-        'path' => '/',
+        'path' => app_cookie_path(),
         'secure' => $secure,
         'httponly' => true,
         'samesite' => 'Strict'

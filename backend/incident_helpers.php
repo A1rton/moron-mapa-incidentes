@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+require_once __DIR__ . '/paths.php';
+
 class IncidentApiException extends RuntimeException
 {
     public int $status;
@@ -64,8 +66,7 @@ function incident_to_feature(array $row): array
                 $row['status'],
 
             'photoUrl' =>
-                '/api/photos.php?id='
-                . urlencode($row['photo_id']),
+                app_url('/api/photos.php?id=' . urlencode($row['photo_id'])),
 
             'createdAt' =>
                 (int) $row['created_at'],
