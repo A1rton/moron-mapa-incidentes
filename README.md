@@ -1,100 +1,45 @@
 # Morón · Mapa territorial e incidentes
 
-Versión final del proyecto con **frontend HTML/CSS/JavaScript + backend PHP + MySQL**.
+Aplicación web desarrollada con **HTML, CSS, JavaScript, PHP y MySQL** para visualizar y administrar incidentes dentro del partido de Morón.
 
-El navegador no se conecta directamente a MySQL. El flujo es:
+## Importante para probar el proyecto en XAMPP
 
-```text
-Frontend (HTML / CSS / JS)
-          ↓ fetch
-API PHP
-          ↓ PDO
-MySQL
-```
+El repositorio está preparado para funcionar aunque se descargue dentro de una **subcarpeta de `htdocs`**. No depende de rutas absolutas como `/api/...` ni de estar copiado directamente en la raíz de XAMPP.
 
-## Funciones incluidas
-
-- Mapa público limitado al partido de Morón.
-- Búsqueda de calle y altura mediante Georef.
-- Filtros por categoría.
-- Geolocalización y avisos de cercanía en el navegador.
-- Panel privado `/admin/`.
-- Alta, edición, resolución y archivo de incidentes.
-- Fotografías almacenadas en MySQL.
-- Contraseña administrativa derivada con PBKDF2-SHA256.
-- Sesiones de 8 horas con cookie HttpOnly y token CSRF.
-- Límite de intentos de acceso y de búsquedas.
-- Caché de búsquedas de direcciones durante 24 horas.
-- Validación en servidor para impedir incidentes fuera de Morón.
-- Control de versión del registro al editar.
-
-## Estructura
+Ejemplo de instalación:
 
 ```text
-/
-├── index.html
-├── styles.css
-├── .htaccess
-├── admin/
-│   └── index.html
-├── api/
-│   ├── incidents.php
-│   ├── photos.php
-│   ├── search.php
-│   └── admin/
-│       ├── incidents.php
-│       ├── login.php
-│       ├── logout.php
-│       ├── session.php
-│       └── setup.php
-├── backend/
-│   ├── .htaccess
-│   ├── config.php
-│   ├── database.php
-│   ├── incident_helpers.php
-│   └── security.php
-├── data/
-│   └── moron.geojson
-├── js/
-│   └── ...
-└── sql/
-    └── schema.sql
+C:\xampp\htdocs\moron-mapa-incidentes\
 ```
 
-## Instalación local con XAMPP
-
-### 1. Copiar el proyecto
-
-Copiá **el contenido de esta carpeta** dentro de:
+La entrada principal del proyecto es:
 
 ```text
-C:\xampp\htdocs\
+index.php
 ```
 
-El `.htaccess` incluido prioriza `index.html`, incluso si XAMPP conserva su `index.php` original.
+No se utiliza `.htaccess` para iniciar la aplicación.
 
-### 2. Iniciar servicios
+### URLs de ejemplo
 
-Desde XAMPP iniciá:
-
-- Apache
-- MySQL
-
-### 3. Crear la base
-
-Abrí:
+Si la carpeta se llama `moron-mapa-incidentes`:
 
 ```text
-http://localhost/phpmyadmin
+http://localhost/moron-mapa-incidentes/
+http://localhost/moron-mapa-incidentes/admin/
 ```
 
-Importá:
+Si se cambia el nombre de la carpeta, las rutas internas se adaptan automáticamente.
 
-```text
-sql/schema.sql
-```
+## Instalación
 
-El script crea `moron_incidentes` y estas tablas:
+1. Descargar o clonar el repositorio dentro de `C:\xampp\htdocs\`.
+2. Iniciar **Apache** y **MySQL** desde XAMPP.
+3. Abrir `http://localhost/phpmyadmin`.
+4. Importar `sql/schema.sql`.
+5. Abrir la URL correspondiente a la carpeta del proyecto.
+
+`sql/schema.sql` crea la base `moron_incidentes` y las tablas:
 
 - `admins`
 - `sessions`
@@ -103,9 +48,9 @@ El script crea `moron_incidentes` y estas tablas:
 - `photo_blobs`
 - `incidents`
 
-### 4. Conexión MySQL
+## Configuración MySQL
 
-`backend/database.php` usa por defecto la configuración típica de XAMPP:
+Por defecto `backend/database.php` utiliza la configuración típica de XAMPP:
 
 ```text
 Host: 127.0.0.1
@@ -115,101 +60,94 @@ Usuario: root
 Contraseña: vacía
 ```
 
-También acepta variables de entorno:
+También admite las variables de entorno `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` y `DB_PASSWORD`.
 
-- `DB_HOST`
-- `DB_PORT`
-- `DB_NAME`
-- `DB_USER`
-- `DB_PASSWORD`
+## Primera activación del administrador
 
-Para un servidor real, usá un usuario MySQL propio y una contraseña fuerte; no uses `root` sin contraseña.
+Con la tabla `admins` vacía, se utiliza el token definido en `backend/config.php`.
 
-### 5. Primera activación del administrador
-
-Si la tabla `admins` está vacía, abrí:
+Si la carpeta se llama `moron-mapa-incidentes`, el formato de la URL es:
 
 ```text
-http://localhost/admin/#setup=abd7a7668be847a73bae4ada6fdc020e6f5d3b4e0ee2457ba2c51f65f2024ee8
+http://localhost/moron-mapa-incidentes/admin/#setup=TOKEN
 ```
 
-Elegí una contraseña de 14 a 128 caracteres.
+La contraseña administrativa debe tener entre 14 y 128 caracteres.
 
-El token anterior es **solo para instalación local/entrega**. Antes de publicar el proyecto en Internet, reemplazalo en `backend/config.php` o definí la variable de entorno `ADMIN_SETUP_TOKEN` con un valor aleatorio de al menos 32 caracteres.
+## Funcionalidades
 
-Si ya existe un administrador en la base, no se vuelve a ejecutar la activación: ingresá normalmente en `/admin/`.
+- Mapa público limitado al partido de Morón.
+- Búsqueda de calle y altura mediante Georef.
+- Filtros por categoría.
+- Geolocalización y avisos de cercanía.
+- Panel privado de administración.
+- Alta, edición, resolución y archivo de incidentes.
+- Fotografías almacenadas en MySQL.
+- Sesiones administrativas con cookie HttpOnly y token CSRF.
+- Caché de búsquedas de direcciones.
+- Validación del territorio de Morón en servidor.
+- Control de versión durante la edición.
 
-## URLs principales
+## Estructura principal
 
 ```text
-http://localhost/
-http://localhost/admin/
+/
+├── index.php
+├── styles.css
+├── admin/
+│   └── index.php
+├── api/
+│   ├── incidents.php
+│   ├── photos.php
+│   ├── search.php
+│   └── admin/
+├── backend/
+│   ├── config.php
+│   ├── database.php
+│   ├── paths.php
+│   ├── incident_helpers.php
+│   └── security.php
+├── data/
+├── js/
+└── sql/
+    └── schema.sql
 ```
+
+## Rutas de la API
+
+Las URLs se construyen en función de la carpeta donde esté instalado el proyecto.
 
 API pública:
 
 ```text
-GET /api/incidents.php
-GET /api/search.php?q=Leandro%20Alem%201678
-GET /api/photos.php?id=UUID
+api/incidents.php
+api/search.php?q=Leandro%20Alem%201678
+api/photos.php?id=UUID
 ```
 
 API administrativa:
 
 ```text
-GET  /api/admin/session.php
-POST /api/admin/setup.php
-POST /api/admin/login.php
-POST /api/admin/logout.php
-GET  /api/admin/incidents.php
-POST /api/admin/incidents.php
-POST /api/admin/incidents.php?id=UUID + X-HTTP-Method-Override: PATCH
-POST /api/admin/incidents.php?id=UUID + X-HTTP-Method-Override: DELETE
+api/admin/session.php
+api/admin/setup.php
+api/admin/login.php
+api/admin/logout.php
+api/admin/incidents.php
 ```
 
-La adaptación `POST + X-HTTP-Method-Override` se usa porque PHP procesa de forma directa los archivos `multipart/form-data` enviados por POST.
+## Estados
 
-## Estados de un incidente
+- `active`: aparece en el mapa público.
+- `resolved`: permanece en administración y deja de aparecer públicamente.
+- `archived`: se retira de la lista habitual y del mapa, pero se conserva en MySQL.
 
-- `active`: aparece en el mapa público y puede generar avisos.
-- `resolved`: permanece en administración pero deja de aparecer públicamente.
-- `archived`: se retira de la lista habitual y del mapa; el registro se conserva en la base.
+## Tecnologías
 
-## Fotografías
-
-El panel acepta JPG, PNG o WebP de hasta 15 MB como archivo original. El navegador prepara un JPEG con lado máximo de 1600 px y hasta 2 MB antes de enviarlo. El servidor vuelve a validar tamaño y formato y almacena los bytes en `photo_blobs`.
-
-## Georef
-
-`api/search.php` consulta el servicio de direcciones de Georef y limita los resultados al partido de Morón. Los resultados se cachean en `search_cache` durante 24 horas.
-
-Para que funcione, PHP debe tener habilitada la extensión **cURL**.
-
-## Seguridad y publicación
-
-La configuración local está pensada para XAMPP. Para publicar el proyecto:
-
-1. Usar HTTPS.
-2. Crear un usuario MySQL exclusivo para la aplicación con contraseña fuerte.
-3. Definir las credenciales mediante variables de entorno.
-4. Cambiar `ADMIN_SETUP_TOKEN` y no compartir el enlace de activación.
-5. Mantener `backend/` bloqueado para acceso HTTP directo.
-6. Mantener copias de seguridad de MySQL, especialmente `incidents`, `photo_blobs` y `admins`.
-
-Las coordenadas de geolocalización de los visitantes no se guardan en MySQL: el cálculo de proximidad se realiza en el navegador.
-
-## Comprobaciones realizadas durante el desarrollo
-
-Se comprobó manualmente en XAMPP el circuito:
-
-- PHP → MySQL.
-- Mapa público leyendo incidentes desde MySQL.
-- Búsqueda de una dirección de Morón con Georef.
-- Alta de incidente desde `/admin/`.
-- Carga y visualización de fotografía.
-- Edición de categoría/datos manteniendo la foto.
-- Cambio a estado resuelto y desaparición del mapa público.
-- Retiro/archivo del incidente.
-- Creación de contraseña administrativa y sesiones.
-
-El ZIP no incluye los datos de la base local: `sql/schema.sql` contiene únicamente la estructura para crear una instalación nueva.
+- HTML5
+- CSS3
+- JavaScript ES Modules
+- PHP 8
+- MySQL / MariaDB
+- PDO
+- Leaflet / MapLibre
+- Georef
