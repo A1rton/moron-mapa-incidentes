@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#050e17"><meta name="robots" content="noindex,nofollow"><title>Administración · Morón</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23050e17'/%3E%3Cpath d='M7 24V8l9 10 9-10v16' fill='none' stroke='%234be7f0' stroke-width='3'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="../styles.css">
 </head>
 <body class="admin-page">
-<header class="topbar"><a class="brand" href="/"><span class="brand-mark" aria-hidden="true">M<span>+</span></span><span class="brand-name">MORÓN<span>ADMINISTRACIÓN</span></span></a><a class="return-map" href="/">Volver al mapa ↗</a><button id="logout" class="subtle-button" type="button" hidden>Cerrar sesión</button></header>
+<header class="topbar"><a class="brand" href="../"><span class="brand-mark" aria-hidden="true">M<span>+</span></span><span class="brand-name">MORÓN<span>ADMINISTRACIÓN</span></span></a><a class="return-map" href="../">Volver al mapa ↗</a><button id="logout" class="subtle-button" type="button" hidden>Cerrar sesión</button></header>
 <main class="admin-scroll">
 <section id="admin-auth" class="auth-card" aria-labelledby="auth-title">
 <span class="eyebrow">GESTIÓN DE INCIDENTES</span><h1 id="auth-title">Administración</h1><p id="auth-description">Comprobando acceso…</p>
@@ -34,6 +34,6 @@
 </div>
 </section>
 </main>
-<script type="module" src="/js/admin.js"></script>
+<script type="module" src="../js/admin.js"></script>
 </body>
 </html>

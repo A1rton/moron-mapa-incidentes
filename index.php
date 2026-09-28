@@ -71,7 +71,7 @@
         <p class="layer-note" id="boundaries-note">Contorno de Morón · Georef / Datos Argentina.</p>
       </section>
       <div class="panel-footer"><span class="legend-dot"></span><span>Tu ubicación</span><span class="mono" id="engine-label">INICIANDO</span></div>
-      <a class="admin-link" href="/admin/">Administrar incidentes ↗</a>
+      <a class="admin-link" href="./admin/">Administrar incidentes ↗</a>
     </aside>
 
     <div class="map-heading"><span class="eyebrow">ÁREA DE EXPLORACIÓN</span><span>PARTIDO DE MORÓN</span></div>
