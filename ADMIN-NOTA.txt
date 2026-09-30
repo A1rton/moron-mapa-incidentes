@@ -1,8 +1,8 @@
 PANEL DE ADMINISTRADOR
 
 Link para crear/configurar la contraseña:
-http://localhost/admin/#setup=abd7a7668be847a73bae4ada6fdc020e6f5d3b4e0ee2457ba2c51f65f2024ee8
+http://localhost/moron-mapa-incidentes/admin/#setup=abd7a7668be847a73bae4ada6fdc020e6f5d3b4e0ee2457ba2c51f65f2024ee8
 
 IMPORTANTE:
-Este archivo es solo una nota personal.
-No publicar este archivo si contiene información sensible.
+Si la carpeta del proyecto tiene otro nombre, reemplazar
+"moron-mapa-incidentes" en la URL por el nombre real de la carpeta.
